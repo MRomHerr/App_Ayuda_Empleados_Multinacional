@@ -105,7 +105,13 @@ fun AppBottomBar(navController: NavController) {
 
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(painter = painterResource(id = item.icon), contentDescription = item.label) },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = item.icon),
+                        contentDescription = item.label,
+                        modifier = Modifier.size(32.dp) // Ajuste del tamaño de las imágenes
+                    )
+                },
                 label = { Text(item.label, color = Color.White) },
                 selected = currentRoute == item.route,
                 onClick = {

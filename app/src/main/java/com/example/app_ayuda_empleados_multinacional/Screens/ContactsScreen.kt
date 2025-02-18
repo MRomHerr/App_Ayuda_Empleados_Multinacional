@@ -252,19 +252,19 @@ fun ContactInfoDisplay(city: String, service: String, contactData: List<ContactI
     val cityContactInfo = contactData.find { it.city == city }
 
     val mapImage = when (city) {
-        "Madrid" -> R.drawable.madrid_map
-        "París" -> R.drawable.paris_map
-        "Londres" -> R.drawable.london_map
-        "Porto Alegre" -> R.drawable.portoalegre_map
-        "Acapulco" -> R.drawable.acapulco_map
-        "Vancouver" -> R.drawable.vancouver_map
-        "Houston" -> R.drawable.houston_map
-        "Casablanca" -> R.drawable.casablanca_map
-        "Osaka" -> R.drawable.osaka_map
-        "Melbourne" -> R.drawable.melbourne_map
-        "Ankara" -> R.drawable.ankara_map
-        "Dubai" -> R.drawable.dubai_map
-        else -> R.drawable.madrid_map // Default map
+        "Madrid" -> R.drawable.logo_empresa
+        "París" -> R.drawable.logo_empresa
+        "Londres" -> R.drawable.logo_empresa
+        "Porto Alegre" -> R.drawable.logo_empresa
+        "Acapulco" -> R.drawable.logo_empresa
+        "Vancouver" -> R.drawable.logo_empresa
+        "Houston" -> R.drawable.logo_empresa
+        "Casablanca" -> R.drawable.logo_empresa
+        "Osaka" -> R.drawable.logo_empresa
+        "Melbourne" -> R.drawable.logo_empresa
+        "Ankara" -> R.drawable.logo_empresa
+        "Dubai" -> R.drawable.logo_empresa
+        else -> R.drawable.logo_empresa // Default map
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
