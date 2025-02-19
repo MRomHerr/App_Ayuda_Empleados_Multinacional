@@ -1,5 +1,6 @@
 package com.example.ayudaempleadosmultinacional.Screens
 
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,11 @@ import androidx.compose.ui.unit.sp
 import com.example.app_ayuda_empleados_multinacional.R
 import com.example.ayudaempleadosmultinacional.ViewModels.TemperatureViewModel
 
+/**
+ * Pantalla principal para la funcionalidad de temperatura.
+ * Muestra la temperatura actual, permite cambiar entre Celsius y Fahrenheit,
+ * ajustar la temperatura y guardar temperaturas.
+ */
 @Composable
 fun TemperatureScreen(viewModel: TemperatureViewModel) {
     val temperature by viewModel.temperature.collectAsState()
@@ -31,27 +37,18 @@ fun TemperatureScreen(viewModel: TemperatureViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar la imagen de la temperatura
         TemperatureImage(celsius = temperature.toInt())
-
-        // Mostrar la temperatura actual
         DisplayTemperature(celsius = temperature.toInt(), isCelsius = isCelsius)
-
-        // Botón para alternar entre Celsius y Fahrenheit
         TemperatureUnit(isCelsius = isCelsius, onToggle = viewModel::toggleTemperatureUnit)
-
-        // Slider para ajustar la temperatura
         TemperatureSlider(value = temperature, onValueChange = viewModel::updateTemperature)
-
-        // Botón para guardar la temperatura
         TemperatureButton(onSave = viewModel::saveTemperature)
-
-        // Mostrar la lista de temperaturas guardadas
         TemperatureList(temperatureList = temperatureList)
-
     }
 }
 
+/**
+ * Botón para cambiar entre unidades de temperatura (Celsius/Fahrenheit).
+ */
 @Composable
 fun TemperatureUnit(isCelsius: Boolean, onToggle: () -> Unit) {
     Button(onClick = onToggle, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD1D126))) {
@@ -59,6 +56,9 @@ fun TemperatureUnit(isCelsius: Boolean, onToggle: () -> Unit) {
     }
 }
 
+/**
+ * Slider para ajustar la temperatura.
+ */
 @Composable
 fun TemperatureSlider(value: Float, onValueChange: (Float) -> Unit) {
     Slider(
@@ -69,21 +69,30 @@ fun TemperatureSlider(value: Float, onValueChange: (Float) -> Unit) {
     )
 }
 
+/**
+ * Muestra la temperatura actual en la unidad seleccionada.
+ */
 @Composable
 fun DisplayTemperature(celsius: Int, isCelsius: Boolean) {
     val fahrenheit = (celsius * 9 / 5) + 32
     Text(text = if (isCelsius) "$celsius ºC" else "$fahrenheit ºF", fontSize = 32.sp)
 }
 
+/**
+ * Muestra la imagen del termómetro.
+ */
 @Composable
 fun TemperatureImage(celsius: Int) {
     Image(
-        painter = painterResource(id = R.drawable.termometro), // Replace with your image resource
+        painter = painterResource(id = R.drawable.termometro),
         contentDescription = "imagen termometro",
         modifier = Modifier.size(100.dp)
     )
 }
 
+/**
+ * Botón para guardar la temperatura actual.
+ */
 @Composable
 fun TemperatureButton(onSave: () -> Unit) {
     Button(
@@ -94,6 +103,9 @@ fun TemperatureButton(onSave: () -> Unit) {
     }
 }
 
+/**
+ * Lista de temperaturas guardadas.
+ */
 @Composable
 fun TemperatureList(temperatureList: List<Pair<Int, Int>>) {
     LazyColumn {
@@ -116,6 +128,9 @@ fun TemperatureList(temperatureList: List<Pair<Int, Int>>) {
     }
 }
 
+/**
+ * Determina el icono a mostrar basado en la temperatura.
+ */
 fun getTemperatureIcon(celsius: Int): Int {
     return when {
         celsius <= 12 -> R.drawable.frio

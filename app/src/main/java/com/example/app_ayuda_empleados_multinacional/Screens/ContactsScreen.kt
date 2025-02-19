@@ -6,235 +6,101 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_ayuda_empleados_multinacional.R
+import com.example.ayudaempleadosmultinacional.ViewModels.ContactInfo
+import com.example.ayudaempleadosmultinacional.ViewModels.ContactsViewModel
 
-
-data class ContactInfo(
-    val city: String,
-    val emergencies: String,
-    val police: String,
-    val firemen: String,
-    val touristOffice: String,
-    val cityHall: String,
-    val taxiService: String,
-    val officeName: String,
-    val officePhone: String,
-    val contactName: String,
-    val contactPhone: String,
-    val contactEmail: String
-)
-
-val contactData = listOf(
-    ContactInfo(
-        city = "Madrid",
-        emergencies = "112",
-        police = "091",
-        firemen = "080",
-        touristOffice = "+34 914 201 314",
-        cityHall = "+34 915 883 300",
-        taxiService = "+34 915 474 700",
-        officeName = "Oficina Madrid",
-        officePhone = "+34 913 423 600",
-        contactName = "Antonio Avellaneda",
-        contactPhone = "+34 913 423 634",
-        contactEmail = "aavellaneda@splatnot.com"
-    ),
-    ContactInfo(
-        city = "París",
-        emergencies = "112",
-        police = "17",
-        firemen = "18",
-        touristOffice = "+33 1 49 52 42 63",
-        cityHall = "+33 1 42 76 60 00",
-        taxiService = "+33 1 45 30 30 30",
-        officeName = "Oficina París",
-        officePhone = "+33 1 45 26 20 30",
-        contactName = "François Merlin",
-        contactPhone = "+33 1 45 26 22 46",
-        contactEmail = "fmerlin@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Londres",
-        emergencies = "999",
-        police = "101",
-        firemen = "999",
-        touristOffice = "+44 20 7344 1000",
-        cityHall = "+44 20 7983 4000",
-        taxiService = "+44 20 7272 0272",
-        officeName = "Oficina Londres",
-        officePhone = "+44 20 2536 0200",
-        contactName = "Sarah Louise Taylor",
-        contactPhone = "+44 20 2536 0232",
-        contactEmail = "staylor@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Porto Alegre",
-        emergencies = "190 (Policía), 193 (Bomberos)",
-        police = "190",
-        firemen = "193",
-        touristOffice = "+55 51 3289 4285",
-        cityHall = "+55 51 3289 1027",
-        taxiService = "+55 51 3211 1188",
-        officeName = "Oficina Porto Alegre",
-        officePhone = "+55 51 5644 1000",
-        contactName = "Maria Fernanda Oliveira Costa",
-        contactPhone = "+55 51 5644 1688",
-        contactEmail = "mfoliveira@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Acapulco",
-        emergencies = "911",
-        police = "911",
-        firemen = "911",
-        touristOffice = "+52 744 482 2855",
-        cityHall = "+52 744 482 1400",
-        taxiService = "+52 744 485 1073",
-        officeName = "Oficina Acapulco",
-        officePhone = "+52 744 779 1000",
-        contactName = "Antonio Avellaneda",
-        contactPhone = "+52 744 779 1948",
-        contactEmail = "aavellaneda@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Vancouver",
-        emergencies = "911",
-        police = "911",
-        firemen = "911",
-        touristOffice = "+1 604 482 2888",
-        cityHall = "+1 604 873 7000",
-        taxiService = "+1 604 681 1111",
-        officeName = "Oficina Vancouver",
-        officePhone = "+34 913 423 600",
-        contactName = "David Miller",
-        contactPhone = "+34 913 423 634",
-        contactEmail = "dmiller@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Houston",
-        emergencies = "911",
-        police = "713 884 3131",
-        firemen = "911",
-        touristOffice = "+1 713 437 5240",
-        cityHall = "+1 713 247 1000",
-        taxiService = "+1 713 236 1111",
-        officeName = "Oficina Houston",
-        officePhone = "+1 713 555 1222",
-        contactName = "Robinson Hill",
-        contactPhone = "+1 713 555 1291",
-        contactEmail = "rhill@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Casablanca",
-        emergencies = "19 (Policía), 15 (Bomberos)",
-        police = "19",
-        firemen = "15",
-        touristOffice = "+212 522 225 410",
-        cityHall = "+212 522 235 157",
-        taxiService = "+212 522 252 014",
-        officeName = "Oficina Casablanca",
-        officePhone = "+212 522 449 000",
-        contactName = "Ahmed Ben Youssef El Fassi",
-        contactPhone = "+212 522 449 644",
-        contactEmail = "abenyoussef@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Osaka",
-        emergencies = "110 (Policía), 119 (Bomberos y Ambulancias)",
-        police = "110",
-        firemen = "119",
-        touristOffice = "+81 6 6345 3301",
-        cityHall = "+81 6 6208 7171",
-        taxiService = "+81 6 6345 1234",
-        officeName = "Oficina Osaka",
-        officePhone = "+81 6 4882 6600",
-        contactName = "Takahashi Hiroshi",
-        contactPhone = "+81 6 4882 6632",
-        contactEmail = "thiroshi@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Melbourne",
-        emergencies = "000",
-        police = "000",
-        firemen = "000",
-        touristOffice = "+61 3 9658 9658",
-        cityHall = "+61 3 9658 9658",
-        taxiService = "+61 3 8413 7300",
-        officeName = "Oficina Melbourne",
-        officePhone = "+61 3 9974 9600",
-        contactName = "Emily Johnson",
-        contactPhone = "+61 3 9974 9677",
-        contactEmail = "ejohnson@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Ankara",
-        emergencies = "112",
-        police = "155",
-        firemen = "110",
-        touristOffice = "+90 312 310 13 55",
-        cityHall = "+90 312 507 10 00",
-        taxiService = "+90 312 444 75 47",
-        officeName = "Oficina Ankara",
-        officePhone = "+90 312 822 70 00",
-        contactName = "Elif Demir",
-        contactPhone = "+90 312 822 70 94",
-        contactEmail = "edemir@splatnot.com"
-    ),
-    ContactInfo(
-        city = "Dubai",
-        emergencies = "999",
-        police = "999",
-        firemen = "997",
-        touristOffice = "+971 4 201 5555",
-        cityHall = "+971 4 406 5555",
-        taxiService = "+971 4 208 0808",
-        officeName = "Oficina Dubai",
-        officePhone = "+971 4 495 7000",
-        contactName = "Khalid Al Maktoum",
-        contactPhone = "+971 4 495 7556",
-        contactEmail = "kalmaktoum@splatnot.com"
-    )
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactsScreen() {
-    val cities = remember { contactData.map { it.city }.distinct() }
-    val services = listOf(
-        "Emergencias", "Policía", "Bomberos",
-        "Oficina de Información y Turismo", "Ayuntamiento",
-        "Servicio de Taxi", "Oficina"
-    )
+fun ContactsScreen(viewModel: ContactsViewModel = viewModel()) {
+    // Estados para manejar la selección de ciudad y servicio
+    var selectedCity by remember { mutableStateOf(viewModel.cities.first()) }
+    var selectedService by remember { mutableStateOf(viewModel.services.first()) }
+    var expandedCity by remember { mutableStateOf(false) }
+    var expandedService by remember { mutableStateOf(false) }
 
-    var selectedCity by remember { mutableStateOf(cities.first()) }
-    var selectedService by remember { mutableStateOf(services.first()) }
-
+    // Columna principal que contiene todos los elementos de la pantalla
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text("Teléfonos de ayuda y contactos", fontSize = 24.sp)
+        // Título de la pantalla
+        Text(
+            "Teléfonos de ayuda y contactos",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Selectores de ciudad y servicio
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Column {
-                Text("Ciudad:")
-                cities.forEach { city ->
-                    Button(onClick = { selectedCity = city }) {
-                        Text(city)
+        // Fila que contiene los menús desplegables de ciudad y servicio
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Menú desplegable para seleccionar la ciudad
+            ExposedDropdownMenuBox(
+                expanded = expandedCity,
+                onExpandedChange = { expandedCity = !expandedCity },
+                modifier = Modifier.weight(1f).padding(end = 8.dp)
+            ) {
+                TextField(
+                    value = selectedCity,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Ciudad") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCity) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expandedCity,
+                    onDismissRequest = { expandedCity = false }
+                ) {
+                    viewModel.cities.forEach { city ->
+                        DropdownMenuItem(
+                            text = { Text(city) },
+                            onClick = {
+                                selectedCity = city
+                                expandedCity = false
+                            }
+                        )
                     }
                 }
             }
 
-            Column {
-                Text("Servicio:")
-                services.forEach { service ->
-                    Button(onClick = { selectedService = service }) {
-                        Text(service)
+            // Menú desplegable para seleccionar el servicio
+            ExposedDropdownMenuBox(
+                expanded = expandedService,
+                onExpandedChange = { expandedService = !expandedService },
+                modifier = Modifier.weight(1f).padding(start = 8.dp)
+            ) {
+                TextField(
+                    value = selectedService,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Servicio") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedService) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expandedService,
+                    onDismissRequest = { expandedService = false }
+                ) {
+                    viewModel.services.forEach { service ->
+                        DropdownMenuItem(
+                            text = { Text(service) },
+                            onClick = {
+                                selectedService = service
+                                expandedService = false
+                            }
+                        )
                     }
                 }
             }
@@ -242,56 +108,64 @@ fun ContactsScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar la información de contacto
-        ContactInfoDisplay(city = selectedCity, service = selectedService, contactData = contactData)
+        // Muestra la información de contacto para la ciudad y servicio seleccionados
+        viewModel.getContactInfo(selectedCity)?.let { contactInfo ->
+            ContactInfoDisplay(
+                city = selectedCity,
+                service = selectedService,
+                contactInfo = contactInfo,
+                phoneNumber = viewModel.getPhoneForService(contactInfo, selectedService)
+            )
+        }
     }
 }
 
+// El resto del código permanece igual
+
+
 @Composable
-fun ContactInfoDisplay(city: String, service: String, contactData: List<ContactInfo>) {
-    val cityContactInfo = contactData.find { it.city == city }
-
-    val mapImage = when (city) {
-        "Madrid" -> R.drawable.logo_empresa
-        "París" -> R.drawable.logo_empresa
-        "Londres" -> R.drawable.logo_empresa
-        "Porto Alegre" -> R.drawable.logo_empresa
-        "Acapulco" -> R.drawable.logo_empresa
-        "Vancouver" -> R.drawable.logo_empresa
-        "Houston" -> R.drawable.logo_empresa
-        "Casablanca" -> R.drawable.logo_empresa
-        "Osaka" -> R.drawable.logo_empresa
-        "Melbourne" -> R.drawable.logo_empresa
-        "Ankara" -> R.drawable.logo_empresa
-        "Dubai" -> R.drawable.logo_empresa
-        else -> R.drawable.logo_empresa // Default map
-    }
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(id = mapImage),
-            contentDescription = "Mapa de $city",
-            modifier = Modifier.size(200.dp)
-        )
-        Text(city, fontSize = 18.sp)
-
-        val serviceInfo = when (service) {
-            "Emergencias" -> cityContactInfo?.emergencies
-            "Policía" -> cityContactInfo?.police
-            "Bomberos" -> cityContactInfo?.firemen
-            "Oficina de Información y Turismo" -> cityContactInfo?.touristOffice
-            "Ayuntamiento" -> cityContactInfo?.cityHall
-            "Servicio de Taxi" -> cityContactInfo?.taxiService
-            "Oficina" -> cityContactInfo?.officePhone
-            else -> null
+fun ContactInfoDisplay(city: String, service: String, contactInfo: ContactInfo, phoneNumber: String) {
+    // Columna que contiene la información de contacto
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        // Box que contiene el mapa y el número de teléfono superpuesto
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+        ) {
+            // Imagen del mapa de la ciudad
+            Image(
+                painter = painterResource(id = R.drawable.termometro), // Reemplazar con la imagen del mapa correspondiente
+                contentDescription = "Mapa de $city",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            // Número de teléfono superpuesto en el mapa
+            Text(
+                text = phoneNumber,
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White,
+                modifier = Modifier.padding(8.dp)
+            )
         }
 
-        Text("Teléfono de $service: ${serviceInfo ?: "No disponible"}")
+        // Nombre de la ciudad y país
+        Text(
+            text = "${contactInfo.city}, ${contactInfo.country}",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
 
-        if (service == "Oficina" && cityContactInfo != null) {
-            Text("Contacto: ${cityContactInfo.contactName}")
-            Text("Teléfono: ${cityContactInfo.contactPhone}")
-            Text("Email: ${cityContactInfo.contactEmail}")
+        // Si el servicio seleccionado es "Oficina", muestra los detalles de contacto
+        if (service == "Oficina") {
+            Text("Contacto: ${contactInfo.contactName}", fontSize = 14.sp)
+            Text("Teléfono: ${contactInfo.contactPhone}", fontSize = 14.sp)
+            Text("Email: ${contactInfo.contactEmail}", fontSize = 14.sp)
         }
     }
 }

@@ -1,3 +1,4 @@
+// MainActivity
 package com.example.ayudaempleadosmultinacional
 
 import android.os.Bundle
@@ -23,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ayudaempleadosmultinacional.ViewModels.TemperatureViewModel
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
@@ -42,12 +42,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Define los elementos de la barra de navegación inferior.
+ */
 sealed class BottomNavItem(val route: String, val icon: Int, val label: String) {
     object Temperatura : BottomNavItem("temperatura", R.drawable.termometro, "Temperatura")
     object Horas : BottomNavItem("horas", R.drawable.reloj, "Horas")
     object Contactos : BottomNavItem("contactos", R.drawable.telefono, "Contactos")
 }
 
+/**
+ * Composable principal que define la estructura de la aplicación.
+ */
 @Composable
 fun MainApp() {
     val navController = rememberNavController()
@@ -59,6 +65,9 @@ fun MainApp() {
     }
 }
 
+/**
+ * Barra superior de la aplicación.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar() {
@@ -71,7 +80,7 @@ fun AppTopBar() {
                     .background(Color(0xFFF5F5DC))
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.logo_empresa), // Reemplazar con el ID del logo
+                    painter = painterResource(id = R.drawable.logo_empresa),
                     contentDescription = "Logo de la Empresa",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -92,6 +101,9 @@ fun AppTopBar() {
     )
 }
 
+/**
+ * Barra de navegación inferior de la aplicación.
+ */
 @Composable
 fun AppBottomBar(navController: NavController) {
     val items = listOf(
@@ -109,7 +121,7 @@ fun AppBottomBar(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.label,
-                        modifier = Modifier.size(32.dp) // Ajuste del tamaño de las imágenes
+                        modifier = Modifier.size(32.dp)
                     )
                 },
                 label = { Text(item.label, color = Color.White) },
@@ -134,6 +146,9 @@ fun AppBottomBar(navController: NavController) {
     }
 }
 
+/**
+ * Contenido principal de la aplicación, maneja la navegación entre pantallas.
+ */
 @Composable
 fun AppContent(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController, startDestination = BottomNavItem.Temperatura.route, Modifier.padding(innerPadding)) {
