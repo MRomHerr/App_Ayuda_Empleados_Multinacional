@@ -21,15 +21,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ayudaempleadosmultinacional.Screens.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ayudaempleadosmultinacional.ViewModels.TemperatureViewModel
+import com.example.ayudaempleadosmultinacional.ViewModels.TemperaturaViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.app_ayuda_empleados_multinacional.R
 import com.example.app_ayuda_empleados_multinacional.ui.theme.App_Ayuda_Empleados_MultinacionalTheme
+import com.example.ayudaempleadosmultinacional.Pantallas.PantallaContactos
+import com.example.ayudaempleadosmultinacional.Pantallas.PantallaTemperatura
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
  * Define los elementos de la barra de navegación inferior.
  */
 sealed class BottomNavItem(val route: String, val icon: Int, val label: String) {
-    object Temperatura : BottomNavItem("temperatura", R.drawable.termometro, "Temperatura")
+    object Temperatura : BottomNavItem("temperatura", R.drawable.termometro2, "Temperatura")
     object Horas : BottomNavItem("horas", R.drawable.reloj, "Horas")
     object Contactos : BottomNavItem("contactos", R.drawable.telefono, "Contactos")
 }
@@ -121,7 +122,7 @@ fun AppBottomBar(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.label,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(30.dp)
                     )
                 },
                 label = { Text(item.label, color = Color.White) },
@@ -153,14 +154,14 @@ fun AppBottomBar(navController: NavController) {
 fun AppContent(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController, startDestination = BottomNavItem.Temperatura.route, Modifier.padding(innerPadding)) {
         composable(BottomNavItem.Temperatura.route) {
-            val temperatureViewModel: TemperatureViewModel = viewModel()
-            TemperatureScreen(temperatureViewModel)
+            val temperatureViewModel: TemperaturaViewModel = viewModel()
+            PantallaTemperatura(temperatureViewModel)
         }
         composable(BottomNavItem.Horas.route) {
-            HoursScreen()
+            PantallaHoras()
         }
         composable(BottomNavItem.Contactos.route) {
-            ContactsScreen()
+            PantallaContactos()
         }
     }
 }

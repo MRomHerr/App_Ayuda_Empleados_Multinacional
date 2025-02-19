@@ -1,4 +1,4 @@
-package com.example.ayudaempleadosmultinacional.Screens
+package com.example.ayudaempleadosmultinacional.Pantallas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -9,22 +9,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_ayuda_empleados_multinacional.R
-import com.example.ayudaempleadosmultinacional.ViewModels.ContactInfo
-import com.example.ayudaempleadosmultinacional.ViewModels.ContactsViewModel
+import com.example.ayudaempleadosmultinacional.ViewModels.InfoContacto
+import com.example.ayudaempleadosmultinacional.ViewModels.ContactosViewModel
 
+/**
+ * Composable principal que muestra la pantalla de contactos.
+ * @param modeloVista ViewModel que contiene la lógica de negocio y datos.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactsScreen(viewModel: ContactsViewModel = viewModel()) {
-    // Estados para manejar la selección de ciudad y servicio
-    var selectedCity by remember { mutableStateOf(viewModel.cities.first()) }
-    var selectedService by remember { mutableStateOf(viewModel.services.first()) }
-    var expandedCity by remember { mutableStateOf(false) }
-    var expandedService by remember { mutableStateOf(false) }
+fun PantallaContactos(modeloVista: ContactosViewModel = viewModel()) {
+    // Estados para manejar las selecciones y expansiones de los menús desplegables
+    var ciudadSeleccionada by remember { mutableStateOf(modeloVista.ciudades.first()) }
+    var servicioSeleccionado by remember { mutableStateOf(modeloVista.servicios.first()) }
+    var expandidoCiudad by remember { mutableStateOf(false) }
+    var expandidoServicio by remember { mutableStateOf(false) }
 
     // Columna principal que contiene todos los elementos de la pantalla
     Column(
@@ -47,28 +50,28 @@ fun ContactsScreen(viewModel: ContactsViewModel = viewModel()) {
         ) {
             // Menú desplegable para seleccionar la ciudad
             ExposedDropdownMenuBox(
-                expanded = expandedCity,
-                onExpandedChange = { expandedCity = !expandedCity },
+                expanded = expandidoCiudad,
+                onExpandedChange = { expandidoCiudad = !expandidoCiudad },
                 modifier = Modifier.weight(1f).padding(end = 8.dp)
             ) {
                 TextField(
-                    value = selectedCity,
+                    value = ciudadSeleccionada,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Ciudad") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCity) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandidoCiudad) },
                     modifier = Modifier.menuAnchor().fillMaxWidth()
                 )
                 ExposedDropdownMenu(
-                    expanded = expandedCity,
-                    onDismissRequest = { expandedCity = false }
+                    expanded = expandidoCiudad,
+                    onDismissRequest = { expandidoCiudad = false }
                 ) {
-                    viewModel.cities.forEach { city ->
+                    modeloVista.ciudades.forEach { ciudad ->
                         DropdownMenuItem(
-                            text = { Text(city) },
+                            text = { Text(ciudad) },
                             onClick = {
-                                selectedCity = city
-                                expandedCity = false
+                                ciudadSeleccionada = ciudad
+                                expandidoCiudad = false
                             }
                         )
                     }
@@ -77,28 +80,28 @@ fun ContactsScreen(viewModel: ContactsViewModel = viewModel()) {
 
             // Menú desplegable para seleccionar el servicio
             ExposedDropdownMenuBox(
-                expanded = expandedService,
-                onExpandedChange = { expandedService = !expandedService },
+                expanded = expandidoServicio,
+                onExpandedChange = { expandidoServicio = !expandidoServicio },
                 modifier = Modifier.weight(1f).padding(start = 8.dp)
             ) {
                 TextField(
-                    value = selectedService,
+                    value = servicioSeleccionado,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Servicio") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedService) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandidoServicio) },
                     modifier = Modifier.menuAnchor().fillMaxWidth()
                 )
                 ExposedDropdownMenu(
-                    expanded = expandedService,
-                    onDismissRequest = { expandedService = false }
+                    expanded = expandidoServicio,
+                    onDismissRequest = { expandidoServicio = false }
                 ) {
-                    viewModel.services.forEach { service ->
+                    modeloVista.servicios.forEach { servicio ->
                         DropdownMenuItem(
-                            text = { Text(service) },
+                            text = { Text(servicio) },
                             onClick = {
-                                selectedService = service
-                                expandedService = false
+                                servicioSeleccionado = servicio
+                                expandidoServicio = false
                             }
                         )
                     }
@@ -109,29 +112,32 @@ fun ContactsScreen(viewModel: ContactsViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Muestra la información de contacto para la ciudad y servicio seleccionados
-        viewModel.getContactInfo(selectedCity)?.let { contactInfo ->
-            ContactInfoDisplay(
-                city = selectedCity,
-                service = selectedService,
-                contactInfo = contactInfo,
-                phoneNumber = viewModel.getPhoneForService(contactInfo, selectedService)
+        modeloVista.obtenerInfoContacto(ciudadSeleccionada)?.let { infoContacto ->
+            MostrarInfoContacto(
+                ciudad = ciudadSeleccionada,
+                servicio = servicioSeleccionado,
+                infoContacto = infoContacto,
+                numeroTelefono = modeloVista.obtenerTelefonoParaServicio(infoContacto, servicioSeleccionado)
             )
         }
     }
 }
 
-// El resto del código permanece igual
-
-
+/**
+ * Composable que muestra la información detallada de contacto para una ciudad y servicio específicos.
+ * @param ciudad Nombre de la ciudad seleccionada.
+ * @param servicio Tipo de servicio seleccionado.
+ * @param infoContacto Objeto que contiene toda la información de contacto.
+ * @param numeroTelefono Número de teléfono específico para el servicio seleccionado.
+ */
 @Composable
-fun ContactInfoDisplay(city: String, service: String, contactInfo: ContactInfo, phoneNumber: String) {
-    // Columna que contiene la información de contacto
+fun MostrarInfoContacto(ciudad: String, servicio: String, infoContacto: InfoContacto, numeroTelefono: String) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        // Box que contiene el mapa y el número de teléfono superpuesto
+        // Contenedor para la imagen del mapa y el número de teléfono
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -140,32 +146,32 @@ fun ContactInfoDisplay(city: String, service: String, contactInfo: ContactInfo, 
         ) {
             // Imagen del mapa de la ciudad
             Image(
-                painter = painterResource(id = R.drawable.termometro), // Reemplazar con la imagen del mapa correspondiente
-                contentDescription = "Mapa de $city",
+                painter = painterResource(id = infoContacto.imagen),
+                contentDescription = "Mapa de ${infoContacto.ciudad}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
             // Número de teléfono superpuesto en el mapa
             Text(
-                text = phoneNumber,
+                text = numeroTelefono,
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.White,
+                color = Color.Black, // Color del texto cambiado a negro
                 modifier = Modifier.padding(8.dp)
             )
         }
 
         // Nombre de la ciudad y país
         Text(
-            text = "${contactInfo.city}, ${contactInfo.country}",
+            text = "${infoContacto.ciudad}, ${infoContacto.pais}",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
-        // Si el servicio seleccionado es "Oficina", muestra los detalles de contacto
-        if (service == "Oficina") {
-            Text("Contacto: ${contactInfo.contactName}", fontSize = 14.sp)
-            Text("Teléfono: ${contactInfo.contactPhone}", fontSize = 14.sp)
-            Text("Email: ${contactInfo.contactEmail}", fontSize = 14.sp)
+        // Información adicional si el servicio seleccionado es "Oficina"
+        if (servicio == "Oficina") {
+            Text("Contacto: ${infoContacto.nombreContacto}", fontSize = 14.sp)
+            Text("Teléfono: ${infoContacto.telefonoContacto}", fontSize = 14.sp)
+            Text("Email: ${infoContacto.emailContacto}", fontSize = 14.sp)
         }
     }
 }

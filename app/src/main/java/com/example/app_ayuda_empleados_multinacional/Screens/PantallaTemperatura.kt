@@ -1,6 +1,5 @@
-package com.example.ayudaempleadosmultinacional.Screens
+package com.example.ayudaempleadosmultinacional.Pantallas
 
-import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_ayuda_empleados_multinacional.R
-import com.example.ayudaempleadosmultinacional.ViewModels.TemperatureViewModel
+import com.example.ayudaempleadosmultinacional.ViewModels.TemperaturaViewModel
 
 /**
  * Pantalla principal para la funcionalidad de temperatura.
@@ -22,10 +21,10 @@ import com.example.ayudaempleadosmultinacional.ViewModels.TemperatureViewModel
  * ajustar la temperatura y guardar temperaturas.
  */
 @Composable
-fun TemperatureScreen(viewModel: TemperatureViewModel) {
-    val temperature by viewModel.temperature.collectAsState()
-    val isCelsius by viewModel.isCelsius.collectAsState()
-    val temperatureList by viewModel.temperatureList.collectAsState()
+fun PantallaTemperatura(modeloVista: TemperaturaViewModel) {
+    val temperatura by modeloVista.temperatura.collectAsState()
+    val esCelsius by modeloVista.esCelsius.collectAsState()
+    val listaTemperaturas by modeloVista.listaTemperaturas.collectAsState()
 
     Column(
         modifier = Modifier
@@ -37,12 +36,12 @@ fun TemperatureScreen(viewModel: TemperatureViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TemperatureImage(celsius = temperature.toInt())
-        DisplayTemperature(celsius = temperature.toInt(), isCelsius = isCelsius)
-        TemperatureUnit(isCelsius = isCelsius, onToggle = viewModel::toggleTemperatureUnit)
-        TemperatureSlider(value = temperature, onValueChange = viewModel::updateTemperature)
-        TemperatureButton(onSave = viewModel::saveTemperature)
-        TemperatureList(temperatureList = temperatureList)
+        ImagenTemperatura(celsius = temperatura.toInt())
+        MostrarTemperatura(celsius = temperatura.toInt(), esCelsius = esCelsius)
+        UnidadTemperatura(esCelsius = esCelsius, alCambiar = modeloVista::cambiarUnidadTemperatura)
+        DeslizadorTemperatura(valor = temperatura, alCambiarValor = modeloVista::actualizarTemperatura)
+        BotonTemperatura(alGuardar = modeloVista::guardarTemperatura)
+        ListaTemperaturas(listaTemperaturas = listaTemperaturas)
     }
 }
 
@@ -50,20 +49,20 @@ fun TemperatureScreen(viewModel: TemperatureViewModel) {
  * Botón para cambiar entre unidades de temperatura (Celsius/Fahrenheit).
  */
 @Composable
-fun TemperatureUnit(isCelsius: Boolean, onToggle: () -> Unit) {
-    Button(onClick = onToggle, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD1D126))) {
-        Text(if (isCelsius) "Mostrar en Fahrenheit" else "Mostrar en Celsius")
+fun UnidadTemperatura(esCelsius: Boolean, alCambiar: () -> Unit) {
+    Button(onClick = alCambiar, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD1D126))) {
+        Text(if (esCelsius) "Mostrar en Fahrenheit" else "Mostrar en Celsius")
     }
 }
 
 /**
- * Slider para ajustar la temperatura.
+ * Deslizador para ajustar la temperatura.
  */
 @Composable
-fun TemperatureSlider(value: Float, onValueChange: (Float) -> Unit) {
+fun DeslizadorTemperatura(valor: Float, alCambiarValor: (Float) -> Unit) {
     Slider(
-        value = value,
-        onValueChange = onValueChange,
+        value = valor,
+        onValueChange = alCambiarValor,
         valueRange = -30f..55f,
         steps = 84
     )
@@ -73,16 +72,16 @@ fun TemperatureSlider(value: Float, onValueChange: (Float) -> Unit) {
  * Muestra la temperatura actual en la unidad seleccionada.
  */
 @Composable
-fun DisplayTemperature(celsius: Int, isCelsius: Boolean) {
+fun MostrarTemperatura(celsius: Int, esCelsius: Boolean) {
     val fahrenheit = (celsius * 9 / 5) + 32
-    Text(text = if (isCelsius) "$celsius ºC" else "$fahrenheit ºF", fontSize = 32.sp)
+    Text(text = if (esCelsius) "$celsius ºC" else "$fahrenheit ºF", fontSize = 32.sp)
 }
 
 /**
  * Muestra la imagen del termómetro.
  */
 @Composable
-fun TemperatureImage(celsius: Int) {
+fun ImagenTemperatura(celsius: Int) {
     Image(
         painter = painterResource(id = R.drawable.termometro),
         contentDescription = "imagen termometro",
@@ -94,9 +93,9 @@ fun TemperatureImage(celsius: Int) {
  * Botón para guardar la temperatura actual.
  */
 @Composable
-fun TemperatureButton(onSave: () -> Unit) {
+fun BotonTemperatura(alGuardar: () -> Unit) {
     Button(
-        onClick = onSave,
+        onClick = alGuardar,
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD1D126))
     ) {
         Text("Guardar Temperatura")
@@ -107,9 +106,9 @@ fun TemperatureButton(onSave: () -> Unit) {
  * Lista de temperaturas guardadas.
  */
 @Composable
-fun TemperatureList(temperatureList: List<Pair<Int, Int>>) {
+fun ListaTemperaturas(listaTemperaturas: List<Pair<Int, Int>>) {
     LazyColumn {
-        items(temperatureList) { (celsius, fahrenheit) ->
+        items(listaTemperaturas) { (celsius, fahrenheit) ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,7 +116,7 @@ fun TemperatureList(temperatureList: List<Pair<Int, Int>>) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(id = getTemperatureIcon(celsius)),
+                    painter = painterResource(id = obtenerIconoTemperatura(celsius)),
                     contentDescription = "Icono temperatura",
                     modifier = Modifier.size(70.dp)
                 )
@@ -131,7 +130,7 @@ fun TemperatureList(temperatureList: List<Pair<Int, Int>>) {
 /**
  * Determina el icono a mostrar basado en la temperatura.
  */
-fun getTemperatureIcon(celsius: Int): Int {
+fun obtenerIconoTemperatura(celsius: Int): Int {
     return when {
         celsius <= 12 -> R.drawable.frio
         celsius in 13..25 -> R.drawable.temperatura_media
